@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-export const authMiddlewar = (req,res,next)=>
+export const authMiddleware = (req,res,next)=>
 {
     try{
         const authHeader = req.headers.authorization;
@@ -8,7 +8,7 @@ export const authMiddlewar = (req,res,next)=>
         {
             return res.status(401).json({success:false,message:"Authorization token required"})
         }
-        const token = authHeader.startsWith("Bear;er")?authHeader.split(" ")[1]:null;
+        const token = authHeader.startsWith("Bearer ")?authHeader.split(" ")[1]:null;
         if(!token)
         {
             return res.status(401).json({success:false,message:"Invalid authorization format"})

@@ -1,8 +1,8 @@
 import express from "express";
-import { signup,logout,login } from "../controller/auth.controller";
-import { sign } from "jsonwebtoken";
-const router = express.router();
+import { signup,logout,login } from "../controller/auth.controller.js";
+
+const router = express.Router();
 router.post("/signup",signup);
 router.post("/login",login);
-router.post("logout",logout);
+router.post("/logout",logout);
 export default router;

@@ -9,11 +9,11 @@ export const registerUser = async({email,name,password})=>
     {
         throw new Error("User already exist")
     }
-    const passwordHash = await bcrypt(password,10);
+    const passwordHash = await bcrypt.hash(password,10);
     const user = await createUser({name,email,passwordHash});
     return user;
 }
-const loginUser = async({email,password})=>
+export const loginUser = async({email,password})=>
 {
     const user = await findUserByEmail(email);
     if(!user)

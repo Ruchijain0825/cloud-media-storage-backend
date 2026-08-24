@@ -11,8 +11,8 @@ export const findByUserId = async(id)=>
     )
     return result.rows[0];
 }
-export const createUser = async({email,name,password_hash})=>
+export const createUser = async({email,name,passwordHash})=>
 {
-    const result  = await pool.query(`INSERT INTO users (email,name,password_hash) VALUES ($1,$2,$3) RETURNING id,email,name,image_url,created_at`,[email,name,password_hash])
+    const result  = await pool.query(`INSERT INTO users (email,name,password_hash) VALUES ($1,$2,$3) RETURNING id,email,name,image_url,created_at`,[email,name,passwordHash])
     return result.rows[0]
 }
