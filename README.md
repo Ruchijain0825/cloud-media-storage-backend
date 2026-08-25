@@ -45,13 +45,9 @@ src/
 ├── routes/
 ├── app.js
 └── server.js
+```
 ## Screenshots
 
-### Login
-![Login Screenshot](./screenshots/login.png)
-
-### Dashboard
-![delete Screenshot](./screenshots/delete.png)
-
-### Folders
-![drive Screenshot](./screenshots/drive.png)
+![Login](./screenshots/login.png)
+![Delete](./screenshots/delete.png)
+![Drive](./screenshots/drive.png)
