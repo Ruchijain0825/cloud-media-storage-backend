@@ -26,6 +26,7 @@ export const uploadFile = async(req,res)=>
     {
         return res.status(500).json({message:"file upload failed",error:error.message})
     }
+    
     const{data:fileData,error:dbError}=await supabase.from("files").insert({name:file.originalname,mime_type:file.mimetype,size_bytes:file.size,storage_key:data.path,owner_id:userId}).select().single();
     if(dbError)
     {
