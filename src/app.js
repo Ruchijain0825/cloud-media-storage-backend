@@ -6,6 +6,9 @@ import folderRoutes from './routes/folder.route.js'
 import shareRoutes from './routes/share.routes.js'
 import linkshareRoutes from './routes/linkshare.routes.js'
 import publicshareRoutes from './routes/publicshare.route.js'
+import searchRoutes from "./routes/search.routes.js"
+import starRoutes from "./routes/star.route.js"
+import trashRoutes from "./routes/restore.route.js"
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -19,7 +22,11 @@ app.use('/api/files',fileRoutes);
 app.use('/api/folder',folderRoutes);
 app.use('/api/shares',shareRoutes);
 app.use("/api/link-shares", linkshareRoutes);
-app.use("/api/public-shares",publicshareRoutes
+app.use("/api/public-shares",publicshareRoutes);
+app.use("/api/search",searchRoutes)
+app.use("/api/stars",starRoutes);
+app.use("/api/trash",trashRoutes)
+
     
-)
+
 export default app
