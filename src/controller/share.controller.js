@@ -76,7 +76,7 @@ export const deleteShare = async(req,res)=>
             return res.status(400).json({success:false,message:"shareId is required"})
         }
         const deletedShare = await getShareModel(id);
-        if(!deleteShare)
+        if(!deletedShare)
         {
             return res.status(404).json({success:false,message:"share id not found"})
         }
