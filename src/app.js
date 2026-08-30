@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors"
 import cookiePrser from "cookie-parser"
 import authRoutes from './routes/auth.routes.js'
 import fileRoutes from './routes/file.route.js'
@@ -10,6 +11,12 @@ import searchRoutes from "./routes/search.routes.js"
 import starRoutes from "./routes/star.route.js"
 import trashRoutes from "./routes/restore.route.js"
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookiePrser());

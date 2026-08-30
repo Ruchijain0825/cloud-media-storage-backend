@@ -90,7 +90,7 @@ test("should return 403 when user does not have permission", async () => {
 
     expect(res.json).toHaveBeenCalledWith({
         success: false,
-        message: "you don't have permission to crate this link "
+        message: "you don't have permission to create this link "
     });
 })
 
@@ -239,5 +239,54 @@ test("should create share link with password", async () => {
             linkShare: mockLinkShare
         });
     });
+        test("should create link share successfully",async()=>
+    {
+        pool.query.mockResolvedValueOnce({rows:[{id:1}]});
+
+        createLinkShareModel.mockResolvedValue({
+            id:10,
+            resource_type:"file",
+            resource_id:1,
+            role:"viewer",
+            token:"abc123",
+            password_hash:null,
+            expires_at:null,
+            created_by:1
+        });
+
+        const req = {body:{resourceType:"file",resourceId:1},user:{userId:1}};
+        const res = {status:jest.fn().mockReturnThis(),json:jest.fn()}
+
+        await createLinkShare(req,res);
+
+        expect(pool.query).toHaveBeenCalledTimes(1);
+
+        expect(createLinkShareModel).toHaveBeenCalledWith({
+            resourceType:"file",
+            resourceId:1,
+            token:expect.any(String),
+            role:"viewer",
+            passwordHash:null,
+            expiresAt:null,
+            createdBy:1
+        });
+
+        expect(res.status).toHaveBeenCalledWith(201);
+
+        expect(res.json).toHaveBeenCalledWith({
+            success:true,
+            message:"public share link created successfully",
+            linkShare:{
+                id:10,
+                resource_type:"file",
+                resource_id:1,
+                role:"viewer",
+                token:"abc123",
+                password_hash:null,
+                expires_at:null,
+                created_by:1
+            }
+        })
+    })
 
 })

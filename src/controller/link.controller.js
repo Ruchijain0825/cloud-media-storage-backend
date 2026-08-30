@@ -22,7 +22,7 @@ export const createLinkShare = async(req,res)=>
 
         if(resourceResult.rows.length===0)
         {
-            return res.status(403).json({success:false,message:"you don't have permission to crate this link "})
+            return res.status(403).json({success:false,message:"you don't have permission to create this link "})
 
         }
         const token = crypto.randomBytes(32).toString("hex");

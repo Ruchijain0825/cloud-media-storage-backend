@@ -6,7 +6,7 @@ export const signup = async(req,res)=>
         const{email,name,password}=req.body
         if(!email||!password||!name)
         {
-            return status(400).json({success:false,message:"email and password are required"});
+            return res. status(400).json({success:false,message:"email and password are required"});
         }
         const user = await registerUser({name,email,password});
         return res.status(201).json({success:true,message:"user created successfully"});
@@ -15,10 +15,12 @@ export const signup = async(req,res)=>
     catch(error)
     {
         console.error("Signup error",error.message);
-        if(error.message==="user already exists")
-        {
-            return res.status(409).json({success:false,message:error.message})
-        }
+         if (error.message.toLowerCase().includes("user already exist")) {
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
+    }
         return res.status(500).json({success:false,message:"Internal Server Error"})
     }
 }
