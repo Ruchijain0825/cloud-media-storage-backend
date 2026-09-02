@@ -10,6 +10,7 @@ import publicshareRoutes from './routes/publicshare.route.js'
 import searchRoutes from "./routes/search.routes.js"
 import starRoutes from "./routes/star.route.js"
 import trashRoutes from "./routes/restore.route.js"
+import passport from "./config/googleOAuth.js";
 const app = express();
 app.use(
   cors({
@@ -20,6 +21,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookiePrser());
+app.use(passport.initialize());
 app.get("/api/health",(req,res)=>
 {
     res.status(201).json({success:true,message:"API is running"})

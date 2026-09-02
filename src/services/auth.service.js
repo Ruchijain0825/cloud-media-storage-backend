@@ -47,3 +47,27 @@ export const getUserById = async(userId)=>
 {
     return findByUserId(userId);
 }
+export const googleLoginUser = async (user) => {
+    const accessToken = jwt.sign(
+        { userId: user.id },
+        process.env.JWT_SECRET,
+        { expiresIn: "5m" }
+    );
+
+    const refreshToken = jwt.sign(
+        { userId: user.id },
+        process.env.REFRESH_SECRET,
+        { expiresIn: "2d" }
+    );
+
+    return {
+        user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image_url: user.image_url,
+        },
+        accessToken,
+        refreshToken,
+    };
+};

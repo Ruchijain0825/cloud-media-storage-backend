@@ -1,8 +1,44 @@
 import express from "express";
-import { createShare, deleteShare, getShare } from "../controller/share.controller.js";
-import {authMiddleware} from '../middleware/auth.middleware.js';
+
+import {
+  createShare,
+  getShare,
+  getSharedWithMe,
+  deleteShare,
+} from "../controller/share.controller.js";
+
+import {
+  authMiddleware,
+} from "../middleware/auth.middleware.js";
+
 const router = express.Router();
-router.post("/", authMiddleware,createShare);
-router.get('/:resourceType/:resourceId',authMiddleware,getShare);
-router,delete("/:id",authMiddleware,deleteShare)
+
+// Shared WITH ME
+router.get(
+  "/",
+  authMiddleware,
+  getSharedWithMe
+);
+
+// Create share
+router.post(
+  "/",
+  authMiddleware,
+  createShare
+);
+
+// Get shares of specific resource
+router.get(
+  "/:resourceType/:resourceId",
+  authMiddleware,
+  getShare
+);
+
+// Revoke share
+router.delete(
+  "/:id",
+  authMiddleware,
+  deleteShare
+);
+
 export default router;

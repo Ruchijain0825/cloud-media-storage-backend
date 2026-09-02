@@ -6,7 +6,7 @@ import { getLinkShareByTokenModel } from "../model/publicshare.model.js";
 export const resolveLinkShare = async (req, res) => {
   try {
     const { token } = req.params;
-    const { password } = req.body;
+    const { password } = req.body||{}
 
 
     const linkshare = await getLinkShareByTokenModel(token);

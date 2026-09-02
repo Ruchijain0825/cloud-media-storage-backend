@@ -5,6 +5,12 @@ export const createFolder = async({name,ownerId,parentId})=>
 
     return result.rows[0]
 }
+export const getRootFolders = async({ownerId})=>
+{
+    const result = await pool.query(`SELECT * FROM folders WHERE owner_id = $1 AND parent_id IS NULL AND is_deleted = false ORDER BY name ASC`,[ownerId])
+
+    return result.rows;
+}
 export const getFolderById = async({folderId,ownerId})=>
 {
     const result = await pool.query(`SELECT * FROM folders where id = $1 AND  owner_id = $2 AND is_deleted = false`,[folderId,ownerId])
@@ -13,17 +19,13 @@ export const getFolderById = async({folderId,ownerId})=>
 }
 export const getChildFolder = async({parentId,ownerId})=>
 {
-    const result = await pool.query(
-        `SELECT * FROM folders WHERE parent_id = $1 AND  owner_id= $2 AND is_deleted = false ORDER BY name ASC`,[parentId,ownerId]
-    )
+    const result = await pool.query( `SELECT * FROM folders WHERE parent_id = $1 AND  owner_id= $2 AND is_deleted = false ORDER BY name ASC`,[parentId,ownerId])
+       
+    
     return result.rows;
 }
-export const updateFolder = async ({
-    folderId,
-    ownerId,
-    name,
-    parentId
-}) => {
+export const updateFolder = async ({ folderId,ownerId,parentId,name}) => {
+    
     const result = await pool.query(
         `UPDATE folders
          SET name = COALESCE($1, name),
@@ -38,12 +40,9 @@ export const updateFolder = async ({
 
     return result.rows[0];
 };
-export const deleteFolder = async({
-    folderId,ownerId
-})=>
+export const deleteFolder = async({folderId,ownerId})=>
 {
-    const result = await pool.query(
-        `UPDATE folders SET is_deleted = true,updated_at=now() WHERE id = $1 AND owner_id = $2 AND is_deleted = false RETURNING * `,[folderId,ownerId]
-    )
+    const result = await pool.query( `UPDATE folders SET is_deleted = true,updated_at=now() WHERE id = $1 AND owner_id = $2 AND is_deleted = false RETURNING * `,[folderId,ownerId])
+       
     return result.rows[0]
 }
