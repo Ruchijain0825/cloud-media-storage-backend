@@ -1,19 +1,15 @@
 import pool from "../config/db.js";
 import supabase from "../config/supabase.js";
-import nodemailer from "nodemailer";
-import { createShareModel, getShareModel, deleteShareModel, getSharedWithMeModel } from "../model/share.model.js";
+import { Resend } from "resend";
+import {
+    createShareModel,
+    getShareModel,
+    deleteShareModel,
+    getSharedWithMeModel,
+} from "../model/share.model.js";
 import { findUserByEmail } from "../model/user.model.js";
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-    requireTLS: true,
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const createShare = async (req, res) => {
     try {
@@ -43,7 +39,13 @@ export const createShare = async (req, res) => {
 
         const table = resourceType === "file" ? "files" : "folders";
 
-        const resource = await pool.query(`SELECT * FROM ${table} WHERE id = $1 AND owner_id = $2 AND is_deleted = false`, [resourceId, ownerId]);
+        const resource = await pool.query(
+            `SELECT * FROM ${table}
+             WHERE id = $1
+             AND owner_id = $2
+             AND is_deleted = false`,
+            [resourceId, ownerId]
+        );
 
         if (resource.rows.length === 0) {
             return res.status(403).json({
@@ -54,6 +56,7 @@ export const createShare = async (req, res) => {
 
         const user = await findUserByEmail(email);
 
+        // Guest user
         if (!user) {
             if (resourceType !== "file") {
                 return res.status(400).json({
@@ -71,7 +74,9 @@ export const createShare = async (req, res) => {
                 });
             }
 
-            const { data } = supabase.storage.from(process.env.SUPABASE_STORAGE_BUCKET).getPublicUrl(file.storage_key);
+            const { data } = supabase.storage
+                .from(process.env.SUPABASE_STORAGE_BUCKET)
+                .getPublicUrl(file.storage_key);
 
             const fileUrl = data?.publicUrl;
 
@@ -82,12 +87,15 @@ export const createShare = async (req, res) => {
                 });
             }
 
-            const ownerResult = await pool.query(`SELECT email FROM users WHERE id = $1`, [ownerId]);
+            const ownerResult = await pool.query(
+                `SELECT email FROM users WHERE id = $1`,
+                [ownerId]
+            );
 
             const ownerEmail = ownerResult.rows[0]?.email || "Someone";
 
-            await transporter.sendMail({
-                from: `"Cloud Media" <${process.env.EMAIL_USER}>`,
+            await resend.emails.send({
+                from: "Cloud Media <onboarding@resend.dev>",
                 to: email,
                 subject: "You received a file from Cloud Media",
                 html: `
@@ -106,7 +114,11 @@ export const createShare = async (req, res) => {
                             </p>
                         </div>
 
-                        <a href="${fileUrl}" target="_blank" style="display: inline-block; padding: 12px 24px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                        <a
+                            href="${fileUrl}"
+                            target="_blank"
+                            style="display: inline-block; padding: 12px 24px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600;"
+                        >
                             View File
                         </a>
 
@@ -124,6 +136,7 @@ export const createShare = async (req, res) => {
             });
         }
 
+        // Registered user
         const granteeUserId = user.id;
 
         if (ownerId === granteeUserId) {
@@ -195,8 +208,11 @@ export const getSharedWithMe = async (req, res) => {
             let url = null;
 
             if (share.resource_type === "file" && share.storage_key) {
-                const { data } = supabase.storage.from(process.env.SUPABASE_STORAGE_BUCKET).getPublicUrl(share.storage_key);
-                url = data.publicUrl;
+                const { data } = supabase.storage
+                    .from(process.env.SUPABASE_STORAGE_BUCKET)
+                    .getPublicUrl(share.storage_key);
+
+                url = data?.publicUrl || null;
             }
 
             return {
