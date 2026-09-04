@@ -10,6 +10,9 @@ import publicshareRoutes from './routes/publicshare.route.js'
 import searchRoutes from "./routes/search.routes.js"
 import starRoutes from "./routes/star.route.js"
 import trashRoutes from "./routes/restore.route.js"
+import recentRoutes from "./routes/recent.route.js";
+
+
 import passport from "./config/googleOAuth.js";
 const app = express();
 app.use(
@@ -34,7 +37,8 @@ app.use("/api/link-shares", linkshareRoutes);
 app.use("/api/public-shares",publicshareRoutes);
 app.use("/api/search",searchRoutes)
 app.use("/api/stars",starRoutes);
-app.use("/api/trash",trashRoutes)
+app.use("/api/trash",trashRoutes);
+app.use("/api/recent", recentRoutes);
 
     
 

@@ -1,20 +1,6 @@
-import {
-  createFolder,
-  getFolderById,
-  getChildFolder,
-  updateFolder,
-  deleteFolder,
-  getRootFolders,
-} from "../model/folder.model.js";
-
-import {
-  getRootFiles,
-  getFilesByFolder,
-} from "../model/file.model.js";
-
+import { createFolder, getFolderById, getChildFolder, updateFolder, deleteFolder, getRootFolders } from "../model/folder.model.js";
+import { getRootFiles, getFilesByFolder } from "../model/file.model.js";
 import { hasPermission } from "../model/permission.model.js";
-
-
 
 export const createFolderController = async (req, res) => {
   try {
@@ -41,9 +27,7 @@ export const createFolderController = async (req, res) => {
       folder,
     });
   } catch (error) {
-    console.error("Create folder error:",error);
-      
-    
+    console.error("Create folder error:", error);
 
     return res.status(500).json({
       success: false,
@@ -52,10 +36,7 @@ export const createFolderController = async (req, res) => {
   }
 };
 
-export const getRootFoldersController = async (
-  req,
-  res
-) => {
+export const getRootFoldersController = async (req, res) => {
   try {
     const ownerId = req.user.userId;
 
@@ -85,12 +66,7 @@ export const getRootFoldersController = async (
   }
 };
 
-
-
-export const getFolderController = async (
-  req,
-  res
-) => {
+export const getFolderController = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.userId;
@@ -105,8 +81,7 @@ export const getFolderController = async (
     if (!permission.allowed) {
       return res.status(403).json({
         success: false,
-        message:
-          "You don't have permission to access this folder",
+        message: "You don't have permission to access this folder",
       });
     }
 
@@ -114,8 +89,6 @@ export const getFolderController = async (
       folderId: id,
       ownerId: userId,
     });
-
- 
 
     if (!folder) {
       return res.status(404).json({
@@ -142,12 +115,7 @@ export const getFolderController = async (
   }
 };
 
-
-
-export const getChildFolderController = async (
-  req,
-  res
-) => {
+export const getChildFolderController = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.userId;
@@ -162,8 +130,7 @@ export const getChildFolderController = async (
     if (!permission.allowed) {
       return res.status(403).json({
         success: false,
-        message:
-          "You don't have permission to access this folder",
+        message: "You don't have permission to access this folder",
       });
     }
 
@@ -211,26 +178,17 @@ export const getChildFolderController = async (
   }
 };
 
-
-
-export const updateFolderController = async (
-  req,
-  res
-) => {
+export const updateFolderController = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, parentId } = req.body;
 
     const userId = req.user.userId;
 
-    if (
-      !name &&
-      parentId === undefined
-    ) {
+    if (!name && parentId === undefined) {
       return res.status(400).json({
         success: false,
-        message:
-          "Name or parentId is required",
+        message: "Name or parentId is required",
       });
     }
 
@@ -244,8 +202,7 @@ export const updateFolderController = async (
     if (!permission.allowed) {
       return res.status(403).json({
         success: false,
-        message:
-          "You need editor permission to update this folder",
+        message: "You need editor permission to update this folder",
       });
     }
 
@@ -265,8 +222,7 @@ export const updateFolderController = async (
 
     return res.status(200).json({
       success: true,
-      message:
-        "Folder updated successfully",
+      message: "Folder updated successfully",
       folder,
       permission: permission.role,
     });
@@ -283,17 +239,10 @@ export const updateFolderController = async (
   }
 };
 
-
-
-export const deleteFolderController = async (
-  req,
-  res
-) => {
+export const deleteFolderController = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.userId;
-
-    
 
     const permission = await hasPermission({
       resourceType: "folder",
@@ -302,14 +251,10 @@ export const deleteFolderController = async (
       requiredRole: "editor",
     });
 
-    if (
-      !permission.allowed ||
-      permission.role !== "owner"
-    ) {
+    if (!permission.allowed || permission.role !== "owner") {
       return res.status(403).json({
         success: false,
-        message:
-          "Only the owner can delete this folder",
+        message: "Only the owner can delete this folder",
       });
     }
 
@@ -327,8 +272,7 @@ export const deleteFolderController = async (
 
     return res.status(200).json({
       success: true,
-      message:
-        "Folder deleted successfully",
+      message: "Folder deleted successfully",
     });
   } catch (error) {
     console.error(

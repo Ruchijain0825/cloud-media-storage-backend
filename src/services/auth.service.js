@@ -4,13 +4,37 @@ import {createUser,findByUserId,findUserByEmail} from '../model/user.model.js'
 
 export const registerUser = async({email,name,password})=>
 {
+    if(!name || !name.trim())
+    {
+        throw new Error("Name is required")
+    }
+
+    if(/\d/.test(name))
+    {
+        throw new Error("Name cannot contain numbers")
+    }
+
+    if(!email || !email.trim())
+    {
+        throw new Error("Email is required")
+    }
+
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+    {
+        throw new Error("Please enter a valid email address")
+    }
+
     const existingUser = await findUserByEmail(email);
+
     if(existingUser)
     {
         throw new Error("User already exist")
     }
+
     const passwordHash = await bcrypt.hash(password,10);
+
     const user = await createUser({name,email,passwordHash});
+
     return user;
 }
 export const loginUser = async({email,password})=>
@@ -26,7 +50,7 @@ export const loginUser = async({email,password})=>
     {
         throw new Error("invalid email or password")
     }
-    const accessToken = jwt.sign({userId:user.id},process.env.JWT_SECRET,{expiresIn:"5m"})
+    const accessToken = jwt.sign({userId:user.id},process.env.JWT_SECRET,{expiresIn:"1h"})
 
     const refreshToken = jwt.sign({userId:user.id},process.env.REFRESH_SECRET,{expiresIn:"2d"})
 

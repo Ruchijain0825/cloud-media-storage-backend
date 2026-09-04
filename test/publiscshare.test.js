@@ -7,13 +7,12 @@ import {
 } from "@jest/globals";
 
 
-// Mock public share model
 jest.unstable_mockModule("../src/model/publicshare.model.js", () => ({
     getLinkShareByTokenModel: jest.fn()
 }));
 
 
-// Mock database
+
 jest.unstable_mockModule("../src/config/db.js", () => ({
     default: {
         query: jest.fn()
@@ -21,7 +20,7 @@ jest.unstable_mockModule("../src/config/db.js", () => ({
 }));
 
 
-// Mock Supabase
+
 jest.unstable_mockModule("../src/config/supabase.js", () => ({
     default: {
         storage: {
@@ -31,7 +30,6 @@ jest.unstable_mockModule("../src/config/supabase.js", () => ({
 }));
 
 
-// Mock bcrypt
 jest.unstable_mockModule("bcrypt", () => ({
     default: {
         compare: jest.fn()
@@ -39,12 +37,12 @@ jest.unstable_mockModule("bcrypt", () => ({
 }));
 
 
-// Import controller AFTER mocks
+
 const { resolveLinkShare } =
     await import("../src/controller/publicshare.controller.js");
 
 
-// Import mocked dependencies
+
 const { getLinkShareByTokenModel } =
     await import("../src/model/publicshare.model.js");
 
@@ -65,7 +63,7 @@ describe("resolveLinkShare", () => {
     });
 
 
-    // 1. Invalid share link
+
     test("should return 404 when share link is invalid", async () => {
 
         getLinkShareByTokenModel.mockResolvedValue(null);
@@ -100,7 +98,7 @@ describe("resolveLinkShare", () => {
     });
 
 
-    // 2. Expired share link
+
     test("should return 410 when share link has expired", async () => {
 
         getLinkShareByTokenModel.mockResolvedValue({
@@ -138,7 +136,6 @@ describe("resolveLinkShare", () => {
     });
 
 
-    // 3. Password required
     test("should return 401 when password is required but not provided", async () => {
 
         getLinkShareByTokenModel.mockResolvedValue({
@@ -175,7 +172,6 @@ describe("resolveLinkShare", () => {
     });
 
 
-    // 4. Invalid password
     test("should return 401 when password is invalid", async () => {
 
         getLinkShareByTokenModel.mockResolvedValue({
@@ -221,7 +217,7 @@ describe("resolveLinkShare", () => {
     });
 
 
-    // 5. Valid password
+
     test("should continue when password is valid", async () => {
 
         getLinkShareByTokenModel.mockResolvedValue({
@@ -272,7 +268,6 @@ describe("resolveLinkShare", () => {
     });
 
 
-    // 6. File not found
     test("should return 404 when file is not found", async () => {
 
         getLinkShareByTokenModel.mockResolvedValue({
@@ -319,7 +314,7 @@ describe("resolveLinkShare", () => {
     });
 
 
-    // 7. Signed URL generation fails
+
     test("should return 500 when signed URL generation fails", async () => {
 
         getLinkShareByTokenModel.mockResolvedValue({
@@ -379,8 +374,6 @@ describe("resolveLinkShare", () => {
             });
     });
 
-
-    // 8. Successful resolution without password
     test("should return 200 when share link is resolved successfully", async () => {
 
         getLinkShareByTokenModel.mockResolvedValue({
@@ -444,7 +437,7 @@ describe("resolveLinkShare", () => {
     });
 
 
-    // 9. Unexpected error
+
     test("should return 500 when unexpected error occurs", async () => {
 
         getLinkShareByTokenModel.mockRejectedValue(

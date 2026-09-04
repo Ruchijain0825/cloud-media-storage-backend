@@ -26,7 +26,7 @@ describe("searchController", () => {
     });
 
 
-    // 1. q missing
+  
     test("should return 400 when search query is missing", async () => {
 
         const req = {
@@ -54,7 +54,7 @@ describe("searchController", () => {
     });
 
 
-    // 2. q empty
+   
     test("should return 400 when search query is empty", async () => {
 
         const req = {
@@ -84,7 +84,6 @@ describe("searchController", () => {
     });
 
 
-    // 3. Invalid page
     test("should return 400 when page is invalid", async () => {
 
         const req = {
@@ -115,7 +114,7 @@ describe("searchController", () => {
     });
 
 
-    // 4. Invalid limit
+   
     test("should return 400 when limit is invalid", async () => {
 
         const req = {
@@ -147,7 +146,7 @@ describe("searchController", () => {
     });
 
 
-    // 5. Successful search
+ 
     test("should return 200 when files and folders are found", async () => {
 
         pool.query
@@ -234,7 +233,6 @@ describe("searchController", () => {
     });
 
 
-    // 6. No results
     test("should return 200 when no files or folders are found", async () => {
 
         pool.query
@@ -287,7 +285,7 @@ describe("searchController", () => {
     });
 
 
-    // 7. Pagination
+
     test("should calculate pagination correctly", async () => {
 
         pool.query
@@ -324,9 +322,6 @@ describe("searchController", () => {
 
         expect(pool.query).toHaveBeenCalledTimes(4);
 
-        // page 2 × limit 10 = 20
-        // totalCount = 30
-        // therefore next page exists
 
         expect(res.json).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -341,7 +336,7 @@ describe("searchController", () => {
     });
 
 
-    // 8. Database error
+  
     test("should return 500 when database error occurs", async () => {
 
         pool.query.mockRejectedValue(
