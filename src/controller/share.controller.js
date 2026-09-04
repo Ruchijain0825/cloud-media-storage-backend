@@ -61,8 +61,7 @@ export const createShare = async (req, res) => {
             if (resourceType !== "file") {
                 return res.status(400).json({
                     success: false,
-                    message:
-                        "Guest sharing is currently available only for files",
+                    message: "Guest sharing is currently available only for files",
                 });
             }
 
@@ -95,54 +94,40 @@ export const createShare = async (req, res) => {
 
             const ownerEmail = ownerResult.rows[0]?.email || "Someone";
 
-            const { data: emailData, error: emailError } =
-                await resend.emails.send({
-                    from: "Cloud Media <onboarding@resend.dev>",
-                    to: email,
-                    subject: "You received a file from Cloud Media",
-                    html: `
-                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #ffffff;">
-                            
-                            <h2 style="color: #1f2937; margin-bottom: 10px;">
-                                Cloud Media
-                            </h2>
+            await resend.emails.send({
+                from: "Cloud Media <onboarding@resend.dev>",
+                to: email,
+                subject: "You received a file from Cloud Media",
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #ffffff;">
+                        <h2 style="color: #1f2937; margin-bottom: 10px;">
+                            Cloud Media
+                        </h2>
 
-                            <p style="color: #4b5563; font-size: 16px;">
-                                <strong>${ownerEmail}</strong> shared a file with you.
+                        <p style="color: #4b5563; font-size: 16px;">
+                            <strong>${ownerEmail}</strong> shared a file with you.
+                        </p>
+
+                        <div style="margin: 25px 0; padding: 18px; background: #f3f4f6; border-radius: 10px;">
+                            <p style="margin: 0; color: #111827; font-size: 16px;">
+                                📄 <strong>${file.name}</strong>
                             </p>
-
-                            <div style="margin: 25px 0; padding: 18px; background: #f3f4f6; border-radius: 10px;">
-                                <p style="margin: 0; color: #111827; font-size: 16px;">
-                                    📄 <strong>${file.name}</strong>
-                                </p>
-                            </div>
-
-                            <a
-                                href="${fileUrl}"
-                                target="_blank"
-                                style="display: inline-block; padding: 12px 24px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600;"
-                            >
-                                View File
-                            </a>
-
-                            <p style="margin-top: 30px; color: #6b7280; font-size: 13px;">
-                                You don't need a Cloud Media account to view this file.
-                            </p>
-
                         </div>
-                    `,
-                });
 
-            console.log("RESEND DATA:", emailData);
-            console.log("RESEND ERROR:", emailError);
+                        <a
+                            href="${fileUrl}"
+                            target="_blank"
+                            style="display: inline-block; padding: 12px 24px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600;"
+                        >
+                            View File
+                        </a>
 
-            if (emailError) {
-                return res.status(500).json({
-                    success: false,
-                    message:
-                        emailError.message || "Failed to send email",
-                });
-            }
+                        <p style="margin-top: 30px; color: #6b7280; font-size: 13px;">
+                            You don't need a Cloud Media account to view this file.
+                        </p>
+                    </div>
+                `,
+            });
 
             return res.status(200).json({
                 success: true,
