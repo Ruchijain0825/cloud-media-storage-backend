@@ -30,9 +30,8 @@ router.get(
     passport.authenticate("google", {
         session: false,
         failureRedirect:
-            "http://localhost:3000/login?error=google_auth_failed",
+            `${process.env.FRONTEND_URL}/login?error=google_auth_failed`,
     }),
     googleCallback
 );
-
 export default router;
