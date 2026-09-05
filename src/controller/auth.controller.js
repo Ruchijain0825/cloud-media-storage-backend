@@ -124,13 +124,13 @@ export const googleCallback = async (req, res) => {
         });
 
         return res.redirect(
-            `http://localhost:3000/auth/callback?accessToken=${accessToken}`
+            `${process.env.FRONTEND_URL}/auth/callback?accessToken=${accessToken}`
         );
     } catch (error) {
         console.error("Google callback error:", error.message);
 
         return res.redirect(
-            "http://localhost:3000/login?error=google_auth_failed"
+            `${process.env.FRONTEND_URL}/login?error=google_auth_failed`
         );
     }
 };
